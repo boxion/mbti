@@ -1,102 +1,153 @@
-import qs1 from '../image/qs1.png';
-import qs2 from '../image/qs2.png';
-import qs3 from '../image/qs3.png';
-import qs4 from '../image/qs4.png';
-import qs5 from '../image/qs5.png';
-import qs6 from '../image/qs6.png';
-import qs7 from '../image/qs7.png';
-import qs8 from '../image/qs8.png';
-import qs9 from '../image/qs9.png';
-import qs10 from '../image/qs10.png';
-import qs11 from '../image/qs11.png';
-import qs12 from '../image/qs12.png';
-import '../App.css';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+const QuestionContainer = styled.div`
+  text-align: center;
+  padding: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to bottom, #d0d0d0, #ffffff);
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 70%;
+  height: 20px;
+  background-color: #c0c0c0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  position: relative;
+`;
+
+const ProgressBar = styled.div`
+  height: 100%;
+  width: ${props => `calc(100/12*${props.num}%)`};
+  background-color: #4caf50;
+  transition: width 0.3s ease-in-out;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 10px;
+`;
+
+const TrainEmoji = styled.span`
+  font-size: 1.2rem;
+`;
+
+const QuestionTitle = styled.p`
+  font-size: 1.5rem;
+  margin: 50px 10px;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 2px solid #4caf50;
+  display: inline-block;
+`;
+
+const AnswerButton = styled.button`
+  background-color: #ffcc00; 
+  color: #333;
+  border: 2px solid #333;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0;
+  width: 100%;
+  max-width: 300px;
+  text-transform: uppercase;
+
+  &:hover {
+    background-color: #ff9900;
+  }
+`;
+
+const ProgressNumber = styled.p`
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #333;
+`;
 
 const questions = {
   1: {
-    title: '아무일도 없는 나른한 오후, 친구가 놀자며 카톡을 보냈다.',
-    image: qs1,
+    title: '지하철역에서 일주일간 봉사활동을 하기로 한 나, 일을 알려주는 분이 엄청 낯을 가리는 것 같다.',
     type: 'EI',
-    A: '빠르게 준비를 마치고 친구를 만나러 나간다.',
-    B: '얼마만의 휴일인데... 집에서 휴식을 취한다.',
+    A: '어색한 분위기가 싫어서 먼저 말을 건다.',
+    B: '나도 낯을 가리기 때문에 조용히 있는다.',
   },
   2: {
-    title: '소개팅을 갔는데 분위기가 너무 어색하다.',
-    image: qs2,
-    type: 'EI',
-    A: '어색함을 견디지 못하고 말을 먼저 꺼낸다.',
-    B: '너무 어색해 미치겠지만 가만히 있는다.',
+    title: '내가 하는 일은 승객들이 안전하게 탑승하는지 확인하는 일이다. 1시간째 가만히 서서 봉사중인 나는...',
+    type: 'SN',
+    A: '아무 생각이 없이 멍 때릴 뿐',
+    B: '일어나지도 않을 일을 상상 중',
   },
   3: {
-    title: '자취를 하려고 집을 구하러 다닌다.',
-    image: qs3,
-    type: 'SN',
-    A: '방 구조, 수압, 방음 등을 꼼꼼하게 체크한다.',
-    B: '방이 화사한지, 넓은지, 포근한지 등을 본다.',
+    title: '저 멀리서부터 열심히 달려왔는데 아깝게 지하철을 놓친 사람을 봤다.',
+    type: 'TF',
+    A: '열심히 달려오던데 짜증나고 힘들겠다..',
+    B: '아깝다. 조금만 더 빨리 오시지',
   },
   4: {
-    title: '바로 당장 내일이 시험인데 공부하기가 너무 싫다.',
-    image: qs4,
-    type: 'SN',
-    A: '범위가 줄었으면 좋겠다. 이번 시험 잘 봐야 하는데..',
-    B: '시험은 왜 봐야 하는거지..? 시험이 사라지는 시대도 올까?',
+    title: '피곤한 하루가 끝나고 집에 도착한 나, 진짜 잠이 쏟아지기 직전인데 챙겨야 할 물건들이 있다.',
+    type: 'PJ',
+    A: '졸려죽겠으니 내일 챙기자 귀찮아..',
+    B: '귀찮지만 미리 가방에 넣어두자!',
   },
   5: {
-    title: '화났을 때 나는?',
-    image: qs5,
-    type: 'TF',
-    A: '논리적으로 잘 말하면서 따진다.',
-    B: '할말이 많지만 너무 분해서 눈물부터 난다.',
+    title: '다음날 봉사활동을 하러 온 나, 오늘은 한산한 것 같다고 말하자 직원분이 그 말을 하면 꼭 사고가 터진다고 말했다.',
+    type: 'SN',
+    A: '에이 설마~ 현실적으로 말이 안되니 그냥 넘긴다.',
+    B: '아 괜히 말했나? 여러가지 불안한 상황이 떠오른다.',
   },
   6: {
-    title: '고민을 얘기하는 친구, 듣다보니 친구의 잘못인 것 같다.',
-    image: qs6,
-    type: 'TF',
-    A: '친구의 잘못된 점을 말해준다.',
-    B: '직접적으로 말하면 친구가 상처받을까봐 돌려 말한다.',
+    title: '어제와 똑같이 탑승하는 걸 지켜보고 있는데 학창시절 조금 친했던 친구가 지하철 계단을 내려오고 있다.',
+    type: 'EI',
+    A: '반가운 마음에 먼저 인사를 한다.',
+    B: '친구가 먼저 인사하면 인사한다.',
   },
   7: {
-    title: '준비물을 챙겨야할 때 나는?',
-    image: qs7,
-    type: 'PJ',
-    A: '굳이 하루전에...? 당일날 챙기면 충분하다!',
-    B: '며칠 전에 미리 챙겨 준비해둔다!',
+    title: '이번엔 간단한 사무업무를 돕기로 한 나, 누구한테 일을 배울까?',
+    type: 'FT',
+    A: '자식처럼 오구오구 따뜻하게 대해주지만 일은 꼼꼼히 안 알려주는 분',
+    B: '내 인사도 무시하며 까칠하게 굴지만 일은 확실히 알려주는 분',
   },
   8: {
-    title: '여행 계획을 짤 때 나는?',
-    image: qs8,
+    title: '사무업무 일이 생각보다 많다.',
     type: 'PJ',
-    A: '그때 그때 가고 싶은 곳 가고 먹고 싶은 것 먹는 것이 낭만이지!',
-    B: '버스 시간, 가격, 메뉴까지 미리 다 정해서 계획을 짜둔다.',
+    A: '내가 하고 싶은 거 먼저 시작해야겠다!',
+    B: '뭐부터 할지 순서를 정해야겠다.',
   },
   9: {
-    title: '곧 워터밤 페스티벌이 열린다고 한다.',
-    image: qs9,
+    title: '직원분이 고생했다며 같이 밥을 먹자고 한다. 딱히 약속은 없다.',
     type: 'EI',
-    A: '아껴뒀던 수영복과 물총을 꺼내 페스티벌을 즐기러 간다.',
-    B: '집에서도 충분히 즐길 수 있어! 유튜브로 시청한다.',
+    A: '약속도 없는데 같이 먹지 뭐',
+    B: '너무 어색한 사이라 약속있다고 둘러댄다.',
   },
   10: {
-    title: '비행기를 탔는데 갑자기 흔들린다.',
-    image: qs10,
-    type: 'SN',
-    A: '최대한 침착하며 안전벨트를 꽉 매고 주위를 살핀다.',
-    B: '비행기가 갑자기 추락하면 어쩌지?? 혹시 누가 테러를 일으킨 건 아닐까??',
+    title: '어느덧 봉사활동 마지막 날! 그동안 날 못마땅해했던 분이 힘들었을 텐데 고생했다고 말한다.',
+    type: 'FT',
+    A: '안 좋았던 감정이 싹 날아가고 기분이 좋아진다',
+    B: '왜 날 못마땅해했는지 궁금하다',
   },
   11: {
-    title: '친구가 갑자기 차 사고가 났다고 한다.',
-    image: qs11,
-    type: 'TF',
-    A: '헐 보험은 들어놨지?? 보험사에서는 뭐래??',
-    B: '헐 몸은 괜찮아?? 다친데는 없고...?',
+    title: '드디어 봉사활동이 끝났다ㅠ 마지막 날이라 그런지 피로가 쏟아지는 상태.. 집에 어떻게 갈까?',
+    type: 'PJ',
+    A: '버스 한 번만 타면 되는데 1시간',
+    B: '지하철 2번 환승하는데 40분',
   },
   12: {
-    title: '오랜만에 밖에서 외식을 하려고 한다.',
-    image: qs12,
-    type: 'PJ',
-    A: '같은 곳은 지겨워! 새로운 곳을 탐방한다!',
-    B: '매번 가던 곳으로! 편안하고 맛있어서 좋다.',
+    title: '모든 하루 일과가 끝나고 잠자리에 누운 나, 일주일간 했던 봉사활동에 대해 생각해 본다.',
+    type: 'SN',
+    A: '봉사시간을 채운 거에 뿌듯함을 느낀다.',
+    B: '일주일간 지하철에서 있었던 일을 떠올리며 생각에 빠진다.',
   },
 };
 
@@ -116,33 +167,21 @@ function Question({ num, setNum, updateScore }) {
   const currentQuestion = questions[num];
 
   return (
-    <div className="content" id="question">
-      <p id="pgrNum">{num}/12</p>
-      <div className="progress">
-        <div
-          className="progress-bar progress-bar-striped progress-bar-animated bg-warning"
-          style={{ width: `calc(100/12*${num}%)` }}
-        ></div>
-      </div>
-      <p id="title">{currentQuestion.title}</p>
-      <div className="question-image-container">
-        {currentQuestion.image && (
-          <img src={currentQuestion.image} className="question-image" />
-        )}
-      </div>
-      <button
-        className="btn btn-warning"
-        onClick={() => handleAnswer(currentQuestion.type, 1)}
-      >
+    <QuestionContainer>
+      <ProgressNumber>{num}/12</ProgressNumber>
+      <ProgressBarContainer>
+        <ProgressBar num={num}>
+          <TrainEmoji>🚇</TrainEmoji>
+        </ProgressBar>
+      </ProgressBarContainer>
+      <QuestionTitle>{currentQuestion.title}</QuestionTitle>
+      <AnswerButton onClick={() => handleAnswer(currentQuestion.type, 1)}>
         {currentQuestion.A}
-      </button>
-      <button
-        className="btn btn-warning mt-3"
-        onClick={() => handleAnswer(currentQuestion.type, 0)}
-      >
-        {currentQuestion.A}
-      </button>
-    </div>
+      </AnswerButton>
+      <AnswerButton onClick={() => handleAnswer(currentQuestion.type, 0)}>
+        {currentQuestion.B}
+      </AnswerButton>
+    </QuestionContainer>
   );
 }
 
